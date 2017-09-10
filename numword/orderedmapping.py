@@ -5,7 +5,7 @@
 orderedmapping
 '''
 
-from __future__ import generators
+
 
 
 class OrderedMapping(dict):

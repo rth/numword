@@ -5,7 +5,7 @@
 numword for FR_BE
 '''
 
-from numword_fr import NumWordFR
+from .numword_fr import NumWordFR
 
 
 class NumWordFRBE(NumWordFR):
@@ -18,8 +18,8 @@ class NumWordFRBE(NumWordFR):
         Setup
         '''
         super(NumWordFRBE, self)._setup()
-        self.mid_numwords.insert(3, (70, u"septante"))
-        self.mid_numwords.insert(2, (90, u"nonante"))
+        self.mid_numwords.insert(3, (70, "septante"))
+        self.mid_numwords.insert(2, (90, "nonante"))
 
 _NW = NumWordFRBE()
 

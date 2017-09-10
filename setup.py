@@ -30,5 +30,5 @@ setup(name='numword',
             'Topic :: Text Processing :: Linguistic',
             ],
         license='LGPL',
-        install_requires=['pymorphy']
+#        install_requires=['pymorphy']
     )

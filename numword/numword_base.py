@@ -5,7 +5,7 @@
 
 """numword base class"""
 
-from orderedmapping import OrderedMapping
+from .orderedmapping import OrderedMapping
 
 class NumWordBase(object):
     """
@@ -17,12 +17,12 @@ class NumWordBase(object):
         self.is_title = False
         self.precision = -1
         self.exclude_title = [] # words that should be excluded from making "Title Case" in using _title() function
-        self.negword = u"(-) "
-        self.pointword = u"(.)"
-        self.errmsg_nonnum = u"type(%s) not in [long, int, float]"
-        self.errmsg_floatord = u"Cannot treat float %s as ordinal."
-        self.errmsg_negord = u"Cannot treat negative number %s as ordinal."
-        self.errmsg_toobig = u"abs(%s) must be less than %s."
+        self.negword = "(-) "
+        self.pointword = "(.)"
+        self.errmsg_nonnum = "type(%s) not in [long, int, float]"
+        self.errmsg_floatord = "Cannot treat float %s as ordinal."
+        self.errmsg_negord = "Cannot treat negative number %s as ordinal."
+        self.errmsg_toobig = "abs(%s) must be less than %s."
         self.inflection = None
 
         self.high_numwords = None # list of words representing powers of 10³ (e.g. thousands, quadrillions etc.); should all be pregenerated in _set_high_numwords()
@@ -69,7 +69,7 @@ class NumWordBase(object):
         """
         Set low num words
         """
-        for word, i in zip(low, range(len(low) - 1, -1, -1)):
+        for word, i in zip(low, list(range(len(low) - 1, -1, -1))):
             self.cards[i] = word
 
     @staticmethod
@@ -153,10 +153,10 @@ class NumWordBase(object):
     def _verify_ordinal(self, value):
         """Verifies numword whether it can be an ordinal or year (not negative, not float)"""
         # todo str or int?
-        if not value == long(value):
-            raise TypeError, self.errmsg_floatord % (value)
+        if not value == int(value):
+            raise TypeError(self.errmsg_floatord % (value))
         if not abs(value) == value:
-            raise TypeError, self.errmsg_negord % (value)
+            raise TypeError(self.errmsg_negord % (value))
 
     def _verify_num(self, value):
         """
@@ -181,18 +181,18 @@ class NumWordBase(object):
             raise TypeError(self.errmsg_nonnum % value)
         import math
         if self.precision == -1:
-            integer, decimal = unicode(value).split(".") # -19.98 -> -19
-            integer, decimal = long(integer), long(decimal)
+            integer, decimal = str(value).split(".") # -19.98 -> -19
+            integer, decimal = int(integer), int(decimal)
         else:
-            integer = long(value) # -19.98 -> -19
+            integer = int(value) # -19.98 -> -19
             decimal = int(round(abs(abs(value) - abs(integer)) * (10**self.precision)))
-        out = [self.cardinal(long(integer))]
+        out = [self.cardinal(int(integer))]
         if not isinstance(self.pointword, list):
             out.append(self._title(self.pointword))
-            out.append(unicode(self.cardinal(decimal)))
+            out.append(str(self.cardinal(decimal)))
         else:
             out.append(self._title(self.pointword[0]))
-            out.append(unicode(self.cardinal(decimal)))
+            out.append(str(self.cardinal(decimal)))
             ending = math.trunc(math.log(decimal,10))+1 # 925 -> trunc(2.91) + 1 = 3
             out.append(self._title(self.pointword[ending]))
         return out
@@ -202,7 +202,7 @@ class NumWordBase(object):
         Convert long to cardinal
         """
         try:
-            assert long(value) == value
+            assert int(value) == value
         except (ValueError, TypeError, AssertionError):
             return " ".join(self._cardinal_float(value))
 
@@ -236,7 +236,7 @@ class NumWordBase(object):
         text = text.split("/")
         if value == 1:
             return text[0]
-        return u"".join(text)
+        return "".join(text)
 
     def _split(self, value, hightxt="", lowtxt="", jointxt="", split_precision=2, longval=True, space=True):
         """This function is for customizing generated strings (e.g. for currency or year)
@@ -249,15 +249,15 @@ class NumWordBase(object):
         try:
             high, low = value
         except TypeError:
-            if long(value) == value: # val is integer
-                high, low = divmod(value, (10**split_precision)); high = long(high)
+            if int(value) == value: # val is integer
+                high, low = divmod(value, (10**split_precision)); high = int(high)
             else: # val is float!
-                print "#"
+                print("#")
                 if self.precision == -1:
-                    high, low = unicode(value).split(".") # -19.98 -> -19
-                    high, low = long(high), long(low)
+                    high, low = str(value).split(".") # -19.98 -> -19
+                    high, low = int(high), int(low)
                 else:
-                    high = long(value) # -19.98 -> -19
+                    high = int(value) # -19.98 -> -19
                     low = int(round(abs(abs(value) - abs(high)) * (10**self.precision)))
         if high:
             hightxt = self._title(self._inflect(high,hightxt,(self.cardinal(high),high)))
@@ -275,9 +275,9 @@ class NumWordBase(object):
             if lowtxt and longval:
                 out.append(self._title(self._inflect(low, lowtxt,(self.cardinal(low),low))))
         if space:
-            return u" ".join(out)
+            return " ".join(out)
         else:
-            return u"".join(out)
+            return "".join(out)
 
     def year(self, value, **kwargs):
         """
@@ -299,25 +299,25 @@ class NumWordBase(object):
         try:
             _card = self.cardinal(value)
         except:
-            _card = u"invalid"
+            _card = "invalid"
         try:
             _ord = self.ordinal(value)
         except:
-            _ord = u"invalid"
+            _ord = "invalid"
         try:
             _ordnum = self.ordinal_number(value)
         except:
-            _ordnum = u"invalid"
+            _ordnum = "invalid"
         try:
             _curr = self.currency(value)
         except:
-            _curr = u"invalid"
+            _curr = "invalid"
         try:
             _year = self.year(value)
         except:
-            _year = u"invalid"
-        print (u"For %s, cardinal is %s;\n\tordinal is %s;\n\tordinal number is %s;\n\tcurrency is %s;\n\tyear is %s." %
-                    (value, _card, _ord, _ordnum, _curr, _year))
+            _year = "invalid"
+        print(("For %s, cardinal is %s;\n\tordinal is %s;\n\tordinal number is %s;\n\tcurrency is %s;\n\tyear is %s." %
+                    (value, _card, _ord, _ordnum, _curr, _year)))
 
     def test_array(self):
         """"""
@@ -330,4 +330,4 @@ class NumWordBase(object):
 
             #1325325436067876801768700107601001012212132143210473207540327057320957032975032975093275093275093270957329057320975093272950730
         ]:
-            print '['+str(val)+',u\''+self.cardinal(val)+'\'],';quit()
+            print('['+str(val)+',u\''+self.cardinal(val)+'\'],');quit()

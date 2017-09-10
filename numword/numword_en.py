@@ -4,7 +4,7 @@
 
 """numword for English language"""
 
-from numword_base import NumWordBase
+from .numword_base import NumWordBase
 
 class NumWordEN(NumWordBase):
     """
@@ -17,8 +17,8 @@ class NumWordEN(NumWordBase):
         """
         # short scale
         max_val = 3 + 3 * len(high)
-        for word, i in zip(high, range(max_val, 3, -3)):
-            self.cards[10**i] = word + u"illion"
+        for word, i in zip(high, list(range(max_val, 3, -3))):
+            self.cards[10**i] = word + "illion"
 
     ''' # long scale
         max_val = 3 + 6 * len(high)
@@ -32,39 +32,39 @@ class NumWordEN(NumWordBase):
         """
         Base setup
         """
-        lows = [u"non", u"oct", u"sept", u"sext", u"quint", u"quadr", u"tr",
-                u"b", u"m"]
-        units = [u"", u"un", u"duo", u"tre", u"quattuor", u"quin", u"sex",
-                u"sept", u"octo", u"novem"]
-        tens = [u"dec", u"vigint", u"trigint", u"quadragint", u"quinquagint",
-                u"sexagint", u"septuagint", u"octogint", u"nonagint"]
-        self.high_numwords = [u"cent"] + self._gen_high_numwords(units, tens, lows)
+        lows = ["non", "oct", "sept", "sext", "quint", "quadr", "tr",
+                "b", "m"]
+        units = ["", "un", "duo", "tre", "quattuor", "quin", "sex",
+                "sept", "octo", "novem"]
+        tens = ["dec", "vigint", "trigint", "quadragint", "quinquagint",
+                "sexagint", "septuagint", "octogint", "nonagint"]
+        self.high_numwords = ["cent"] + self._gen_high_numwords(units, tens, lows)
 
 
     def _setup(self):
         """
         Setup
         """
-        self.negword = u"minus "
-        self.pointword = u"point"
+        self.negword = "minus "
+        self.pointword = "point"
         self.errmsg_nonnum = "Only numbers may be converted to words."
-        self.exclude_title = [u"and", u"point", u"minus"]
+        self.exclude_title = ["and", "point", "minus"]
 
-        self.mid_numwords = [(1000, u"thousand"), (100, u"hundred"),
-                (90, u"ninety"), (80, u"eighty"), (70, u"seventy"),
-                (60, u"sixty"), (50, u"fifty"), (40, u"forty"), (30, u"thirty")]
-        self.low_numwords = [u"twenty", u"nineteen", u"eighteen", u"seventeen",
-                u"sixteen", u"fifteen", u"fourteen", u"thirteen", u"twelve",
-                u"eleven", u"ten", u"nine", u"eight", u"seven", u"six", u"five",
-                u"four", u"three", u"two", u"one", u"zero"]
+        self.mid_numwords = [(1000, "thousand"), (100, "hundred"),
+                (90, "ninety"), (80, "eighty"), (70, "seventy"),
+                (60, "sixty"), (50, "fifty"), (40, "forty"), (30, "thirty")]
+        self.low_numwords = ["twenty", "nineteen", "eighteen", "seventeen",
+                "sixteen", "fifteen", "fourteen", "thirteen", "twelve",
+                "eleven", "ten", "nine", "eight", "seven", "six", "five",
+                "four", "three", "two", "one", "zero"]
         self.ords = {
-                u"one": u"first",
-                u"two": u"second",
-                u"three": u"third",
-                u"five": u"fifth",
-                u"eight": u"eighth",
-                u"nine": u"ninth",
-                u"twelve": u"twelfth",
+                "one": "first",
+                "two": "second",
+                "three": "third",
+                "five": "fifth",
+                "eight": "eighth",
+                "nine": "ninth",
+                "twelve": "twelfth",
                 }
 
 
@@ -76,12 +76,12 @@ class NumWordEN(NumWordBase):
         if curr_num == 1 and next_num < 100:
             return next # everything less than 100 doesn't need a prefix 'one'
         elif 100 > curr_num > next_num :
-            return u"%s-%s" % (curr_text, next_text), curr_num + next_num
+            return "%s-%s" % (curr_text, next_text), curr_num + next_num
         elif curr_num >= 100 > next_num:
-            return u"%s and %s" % (curr_text, next_text), curr_num + next_num
+            return "%s and %s" % (curr_text, next_text), curr_num + next_num
         elif next_num > curr_num:
-            return u"%s %s" % (curr_text, next_text), curr_num * next_num
-        return u"%s, %s" % (curr_text, next_text), curr_num + next_num
+            return "%s %s" % (curr_text, next_text), curr_num * next_num
+        return "%s, %s" % (curr_text, next_text), curr_num + next_num
 
 
     def ordinal(self, value):
@@ -95,11 +95,11 @@ class NumWordEN(NumWordBase):
         try:
             lastword = self.ords[lastword]
         except KeyError:
-            if lastword[-1] == u"y":
-                lastword = lastword[:-1] + u"ie"
-            lastword += u"th"
+            if lastword[-1] == "y":
+                lastword = lastword[:-1] + "ie"
+            lastword += "th"
         lastwords[-1] = self._title(lastword)
-        outwords[-1] = u"-".join(lastwords)
+        outwords[-1] = "-".join(lastwords)
         return " ".join(outwords)
 
 
@@ -108,7 +108,7 @@ class NumWordEN(NumWordBase):
         Convert to ordinal num
         """
         self._verify_ordinal(value)
-        return u"%s%s" % (value, self.ordinal(value)[-2:])
+        return "%s%s" % (value, self.ordinal(value)[-2:])
 
 
     def year(self, value, longval=True):
@@ -117,22 +117,22 @@ class NumWordEN(NumWordBase):
         century = value // 100
         decades = value % 100
         if 0 < value < 1000 or 2099 < value < 3000: # 2177 -> two thousand and twelve; 711 -> seven hundred eleven
-            return self._split(value, hightxt=u"hundred", jointxt=u"and", longval=longval)
+            return self._split(value, hightxt="hundred", jointxt="and", longval=longval)
         if century < 20: # 1145 -> eleven forty-five
             if decades < 10: # years like 1406 or 2108 should be said as 'forteen o six'
-                return self._split(value, hightxt=u"", jointxt=u"o", longval=longval)
+                return self._split(value, hightxt="", jointxt="o", longval=longval)
             else:
-                return self._split(value, hightxt=u"", jointxt=u"", longval=longval)
+                return self._split(value, hightxt="", jointxt="", longval=longval)
         else:
             self.cardinal(value)
         if 0 < value < 10000:
-            return self._split(value, hightxt=u"", jointxt=u"", longval=longval)
+            return self._split(value, hightxt="", jointxt="", longval=longval)
         return self.cardinal(value)
 
     def currency(self, value, longval=True):
         temp_precision, self.precision = self.precision, 2
-        return_var = self._split(value, hightxt=u"dollar/s", lowtxt=u"cent/s",
-                                split_precision=0, jointxt=u"and", longval=longval)
+        return_var = self._split(value, hightxt="dollar/s", lowtxt="cent/s",
+                                split_precision=0, jointxt="and", longval=longval)
         self.precision = temp_precision
         return return_var
 

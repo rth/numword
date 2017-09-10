@@ -4,7 +4,7 @@
 
 """numword for German language"""
 
-from numword_eu import NumWordEU
+from .numword_eu import NumWordEU
 
 #//TODO: Use German error messages
 class NumWordDE(NumWordEU):
@@ -17,44 +17,44 @@ class NumWordDE(NumWordEU):
         """
         max = 3 + 6*len(high)
 
-        for word, n in zip(high, range(max, 3, -6)):
-            self.cards[10**n] = word + u"illiarde"
-            self.cards[10**(n-3)] = word + u"illion"
+        for word, n in zip(high, list(range(max, 3, -6))):
+            self.cards[10**n] = word + "illiarde"
+            self.cards[10**(n-3)] = word + "illion"
 
     def _setup(self):
         """
         Setup
         """
-        self.negword = u"minus "
-        self.pointword = u"Komma"
-        self.errmsg_nonnum = u"Nur Zahlen koennen in Worte konvertiert werden."
-        self.errmsg_toobig = u"Zahl ist zu gross um in Worte konvertiert zu werden."
+        self.negword = "minus "
+        self.pointword = "Komma"
+        self.errmsg_nonnum = "Nur Zahlen koennen in Worte konvertiert werden."
+        self.errmsg_toobig = "Zahl ist zu gross um in Worte konvertiert zu werden."
         self.exclude_title = []
-        lows = [u"Non", u"Okt", u"Sept", u"Sext", u"Quint", u"Quadr", u"Tr",
-                u"B", u"M"]
-        units = [u"", u"Un", u"Do", u"Tre", u"Quattuor", u"Quin", u"Sex",
-                u"Septem", u"Okto", u"Novem"]
-        tens = [u"Dezi", u"Vigint", u"Trigint", u"Quadragint", u"Quinquagint",
-                u"Sexagint", u"Septuagint", u"Oktogint", u"Nonagint"]
-        self.high_numwords = [u"zent"] + self._gen_high_numwords(units, tens, lows)
-        self.mid_numwords = [(1000, u"tausend"), (100, u"hundert"),
-                (90, u"neunzig"), (80, u"achtzig"), (70, u"siebzig"),
-                (60, u"sechzig"), (50, u"fünfzig"), (40, u"vierzig"),
-                (30, u"dreißig"), (20, u"zwanzig"), (19, u"neunzehn"),
-                (18, u"achtzehn"), (17, u"siebzehn"), (16, u"sechzehn"),
-                (15, u"fünfzehn"), (14, u"vierzehn"), (13, u"dreizehn"),
-                (12, u"zwölf"), (11, u"elf"), (10, u"zehn")]
-        self.low_numwords = [u"neun", u"acht", u"sieben", u"sechs", u"fünf",
-                u"vier", u"drei", u"zwei", u"eins", u"null"]
+        lows = ["Non", "Okt", "Sept", "Sext", "Quint", "Quadr", "Tr",
+                "B", "M"]
+        units = ["", "Un", "Do", "Tre", "Quattuor", "Quin", "Sex",
+                "Septem", "Okto", "Novem"]
+        tens = ["Dezi", "Vigint", "Trigint", "Quadragint", "Quinquagint",
+                "Sexagint", "Septuagint", "Oktogint", "Nonagint"]
+        self.high_numwords = ["zent"] + self._gen_high_numwords(units, tens, lows)
+        self.mid_numwords = [(1000, "tausend"), (100, "hundert"),
+                (90, "neunzig"), (80, "achtzig"), (70, "siebzig"),
+                (60, "sechzig"), (50, "fünfzig"), (40, "vierzig"),
+                (30, "dreißig"), (20, "zwanzig"), (19, "neunzehn"),
+                (18, "achtzehn"), (17, "siebzehn"), (16, "sechzehn"),
+                (15, "fünfzehn"), (14, "vierzehn"), (13, "dreizehn"),
+                (12, "zwölf"), (11, "elf"), (10, "zehn")]
+        self.low_numwords = ["neun", "acht", "sieben", "sechs", "fünf",
+                "vier", "drei", "zwei", "eins", "null"]
         self.ords = {
-                u"eins": u"ers",
-                u"drei": u"drit",
-                u"acht": u"ach",
-                u"sieben": u"sieb",
-                u"hundert": u"hunderts",
-                u"tausend": u"tausends",
-                u"million": u"millionens",
-                u"ig": u"igs",
+                "eins": "ers",
+                "drei": "drit",
+                "acht": "ach",
+                "sieben": "sieb",
+                "hundert": "hunderts",
+                "tausend": "tausends",
+                "million": "millionens",
+                "ig": "igs",
                 }
         self.ordflag = False
 
@@ -74,7 +74,7 @@ class NumWordDE(NumWordEU):
 
             decimal = int(round(post * (10**self.precision)))
             for digit in tuple([x for x in str(decimal)]):
-                out.append(unicode(self.cardinal(int(digit))))
+                out.append(str(self.cardinal(int(digit))))
                 number = " ".join(out)
         return number
 
@@ -85,28 +85,28 @@ class NumWordDE(NumWordEU):
         ctext, cnum, ntext, nnum = curr + next
         if cnum == 1:
             if nnum == 100 or nnum == 10**3 :
-                return u"ein" + ntext, nnum
+                return "ein" + ntext, nnum
             if nnum >= 10**6 and not (nnum % 10**3):
-                return u"eine " + ntext.capitalize(), nnum
+                return "eine " + ntext.capitalize(), nnum
             return next
         if nnum > cnum:
             if nnum >= 10**6:
-                if ntext[-1] == u"e":
+                if ntext[-1] == "e":
                     ntext = ntext[:-1]
                 if cnum > 1:
-                    ntext += u"en"
+                    ntext += "en"
                 ctext += " "
             val = cnum * nnum
         else:
             if nnum < 10 < cnum < 100:
                 if nnum == 1:
-                    ntext = u"ein"
-                ntext, ctext =  ctext, ntext + u"und"
+                    ntext = "ein"
+                ntext, ctext =  ctext, ntext + "und"
             elif nnum < 10 < cnum < 1000:
                 if nnum == 1:
-                    ntext = u"eins"
+                    ntext = "eins"
                 ntext, ctext =  ntext, ctext
-            if cnum >= 10**6 and nnum <> 0:
+            if cnum >= 10**6 and nnum != 0:
                 ctext += " "
             val = cnum + nnum
 
@@ -125,14 +125,14 @@ class NumWordDE(NumWordEU):
             if outword.endswith(key):
                 outword = outword[:len(outword) - len(key)] + self.ords[key]
                 break
-        return outword + u"te"
+        return outword + "te"
 
     def ordinal_number(self, value):
         """
         Convert to ordinal number
         """
         self._verify_ordinal(value)
-        return unicode(value) + u"te"
+        return str(value) + "te"
 
     def currency(self, val, longval=True, old=False, hightxt=False, lowtxt=False, space=True):
         """
@@ -140,11 +140,11 @@ class NumWordDE(NumWordEU):
         """
         self.precision = 2
         if old:
-            return self._split(val, hightxt=u"Mark", lowtxt=u"Pfennig(e)",
-                                split_precision=0,jointxt=u"und",longval=longval)
-        curr = super(NumWordDE, self).currency(val, jointxt=u"und", hightxt=u"Euro",
-                        lowtxt=u"Cent", longval=longval, space=space)
-        return curr.replace(u"eins", u"ein")
+            return self._split(val, hightxt="Mark", lowtxt="Pfennig(e)",
+                                split_precision=0,jointxt="und",longval=longval)
+        curr = super(NumWordDE, self).currency(val, jointxt="und", hightxt="Euro",
+                        lowtxt="Cent", longval=longval, space=space)
+        return curr.replace("eins", "ein")
 
     def cardinal(self, value):
         # catch floats and parse decimalplaces
@@ -152,7 +152,7 @@ class NumWordDE(NumWordEU):
             prefix, suffix = str(value).split(".")
             pre_card = super(NumWordDE, self).cardinal(int(prefix))
             suf_card = self._cardinal_float(float("." + suffix))
-            suf_card = suf_card.replace(u"null %s" % _NW.pointword,_NW.pointword)
+            suf_card = suf_card.replace("null %s" % _NW.pointword,_NW.pointword)
             cardinal = pre_card + " " + suf_card
             return cardinal
         else:
@@ -162,11 +162,11 @@ class NumWordDE(NumWordEU):
         self._verify_ordinal(value)
         if not (value//100)%10:
             return self.cardinal(value)
-        year = self._split(value, hightxt=u"hundert", longval=longval, space=False)
+        year = self._split(value, hightxt="hundert", longval=longval, space=False)
         if not year.count(self.negword) == 0:
             year = year.replace(self.negword, "").strip()
-            year = year + u" v. Chr."
-        return year.replace(u"eins", u"ein")
+            year = year + " v. Chr."
+        return year.replace("eins", "ein")
 
 _NW = NumWordDE()
 
